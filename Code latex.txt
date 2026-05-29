@@ -1,0 +1,884 @@
+\documentclass[12pt,a4paper]{report}
+
+
+
+% --- Encodage & langue ---
+
+\usepackage[utf8]{inputenc}
+
+\usepackage[T1]{fontenc}
+
+\usepackage[french]{babel}
+
+
+
+% --- Mise en page ---
+
+\usepackage{geometry}
+
+\geometry{left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+
+
+
+% --- Packages utiles ---
+
+\usepackage{graphicx}
+
+\usepackage{amsmath,amssymb}
+
+\usepackage{fancyhdr}
+
+\usepackage{hyperref}
+
+\usepackage{setspace}
+
+\usepackage{xcolor}
+
+\usepackage{titlesec}
+
+\usepackage{lmodern}
+
+\usepackage{float}
+
+\usepackage{caption}
+
+\usepackage{subcaption}
+
+\usepackage{booktabs}
+
+\usepackage{array}
+
+\usepackage{multirow}
+
+\usepackage{enumitem}
+
+\usepackage{tikz}
+
+\usetikzlibrary{positioning,shapes.geometric}
+
+% --- Package pour le tableau des relations mathématiques ---
+\usepackage{tocloft}
+\newlistof{mathrel}{lom}{Liste des Relations Mathématiques}
+\newcommand{\mathrelentry}[2]{%
+  \refstepcounter{mathrel}%
+  \addcontentsline{lom}{mathrel}{\protect\numberline{\themathrel}#1}%
+}
+
+% Compteur pour les équations par chapitre (chap.eq)
+\numberwithin{equation}{chapter}
+
+
+
+% --- Style des titres ---
+
+\titleformat{\chapter}[display]
+
+
+\titlespacing*{\chapter}{0pt}{-30pt}{40pt}
+
+
+
+% --- Informations ---
+
+\date{Année Universitaire 2025-2026}
+
+
+
+% --- En-têtes ---
+
+\pagestyle{fancy}
+
+\fancyhf{}
+
+\fancyhead[C]{Rapport de Projet - Entraînement de Modèles de Deep Learning}
+
+\fancyhead[R]{\thepage}
+
+\fancyfoot[C]{EMSI - 2025-2026}
+
+\renewcommand{\headrulewidth}{0.4pt}
+
+\renewcommand{\footrulewidth}{0.4pt}
+
+
+
+% --- Interligne 1.5 ---
+
+\onehalfspacing
+
+
+
+% --- Commandes personnalisées ---
+
+\newcommand{\keyword}[1]{\textcolor{blue}{\textbf{#1}}}
+
+\newcommand{\important}[1]{\textcolor{red}{\textbf{#1}}}
+
+
+
+\begin{document}
+
+
+
+% --- Page de garde ---
+
+\begin{titlepage}
+
+\centering
+
+
+
+{\scshape\small Ecole Marocaine des Sciences de l'Ingénieur \\ Membre de Honoris United Universities \par}
+
+
+
+\vspace{0.5cm}
+
+\begin{figure}[h]
+
+\centering
+
+\includegraphics[width=0.45\textwidth]{emsi.png}
+
+\end{figure}
+
+\vspace{0.5cm}
+
+
+
+\begin{center}
+
+\rule{\linewidth}{1pt}
+
+\vspace{0.4cm}
+
+{\Large\bfseries Rapport de Projet de Fin de Module \\ \vspace{0.3cm} Deep Learning Fondamental et Appliqué \par}
+
+\vspace{0.4cm}
+
+\rule{\linewidth}{1pt}
+
+\end{center}
+
+
+
+\vspace{1.5cm}
+
+{\large\bfseries Guide de Référence pour l'Entraînement de Modèles \\ MLP • CNN • RNN • LSTM • GRU • Architectures Hybrides \par}
+
+
+
+\vspace{2.5cm}
+
+\begin{minipage}{0.9\textwidth}
+
+\begin{flushleft} \Large
+
+\keyword{Réalisé par :} \\
+
+Reddad Chaouay \\
+
+\vspace{1cm}
+
+\keyword{Encadré par :} \\
+
+Mme. HIDILA Zineb \\
+
+\end{flushleft}
+
+\end{minipage}
+
+
+
+\vfill
+
+{\large Année Universitaire 2025-2026\par}
+
+\end{titlepage}
+
+
+
+% --- Résumé ---
+
+\chapter*{Résumé}
+
+\addcontentsline{toc}{chapter}{Résumé}
+
+Ce projet de fin de module présente une étude exhaustive et une implémentation rigoureuse des principales architectures de réseaux de neurones profonds (Deep Learning) appliquées à des typologies de données hétérogènes. Structuré autour des lignes directrices académiques de l'EMSI, ce travail couvre trois axes pratiques fondamentaux : la modélisation de données tabulaires à l'aide d'un Perceptron Multicouche (MLP) pour la prédiction binaire de la qualité du vin (Dataset WineQT), la classification d'images complexes via un Réseau de Neurones Convolutifs (CNN) personnalisé et optimisé par transfert d'apprentissage (Fine-Tuning de ResNet18 sur Fashion-MNIST), et enfin, le traitement automatique du langage naturel (NLP) au moyen d'un système de traduction de séquences de type Encodeur-Décodeur (Seq2Seq) exploitant de manière modulaire les architectures récurrentes LSTM et GRU avec injection de la technique du \textit{Teacher Forcing}. 
+
+
+
+L'approche technique adoptée repose entièrement sur le framework open-source \textbf{PyTorch} et l'exploitation d'accélérateurs matériels GPU (Tesla T4) au sein de l'environnement de cloud-computing Kaggle. Au-delà des performances empiriques remarquables obtenues (notamment une précision supérieure à 96\% en vision artificielle), ce manuscrit développe une analyse critique approfondie des mécanismes de convergence, de la sensibilité des hyperparamètres, des stratégies d'initialisation des poids (Xavier/Glorot vs He/Kaiming), ainsi que des problématiques d'interprétabilité géométrique des représentations internes. Ce guide constitue ainsi un cadre méthodologique unifié et hautement reproductible pour la conception de systèmes décisionnels intelligents.
+
+
+
+\vspace{0.5cm}
+
+\textbf{Mots-clés :} Deep Learning, PyTorch, Perceptron Multicouche, Réseaux Convolutifs, Modèles Récurrents, LSTM, GRU, Seq2Seq, Fine-Tuning, Science des Données.
+
+
+
+\tableofcontents
+
+\listoffigures
+
+\addcontentsline{toc}{chapter}{Liste des figures}
+
+% --- Tableau des relations mathématiques ---
+\listofmathrel
+\addcontentsline{toc}{chapter}{Liste des Relations Mathématiques}
+
+
+
+% --- Introduction Générale ---
+
+\chapter*{Introduction Générale}
+
+\addcontentsline{toc}{chapter}{Introduction Générale}
+
+L'avènement de l'apprentissage profond (Deep Learning) a profondément redéfini les paradigmes de la science des données et de l'intelligence artificielle au cours de la dernière décennie. En s'affranchissant de l'étape fastidieuse de l'extraction manuelle des caractéristiques (\textit{feature engineering}), les architectures de réseaux de neurones profonds se sont révélées capables d'apprendre de manière totalement autonome des hiérarchies de représentations de plus en plus abstraites et complexes, directement à partir de données brutes. Cette capacité unique de généralisation s'appuie sur le théorème d'approximation universelle, démontrant qu'un réseau de neurones à une seule couche cachée doté d'activations non linéaires peut approximer n'importe quelle fonction continue sur un espace compact.
+
+
+
+Dans le cadre de ce projet intégrateur de fin de module à l'École Marocaine des Sciences de l'Ingénieur (EMSI), l'objectif majeur est de concevoir, d'implémenter de manière logicielle et d'analyser d'un œil critique l'efficacité de ces architectures face à la diversité du monde réel. Le travail est structuré selon une logique incrémentale de complexité des données :
+
+\begin{enumerate}
+
+    \item \textbf{Les Données Structurées/Tabulaires :} Abordées à l'aide d'un Perceptron Multicouche (MLP), caractérisé par des connexions denses (\textit{Fully Connected Layers}), où l'information se propage de manière unidirectionnelle pour capturer des corrélations non linéaires entre des indicateurs physico-chimiques.
+
+    \item \textbf{Les Données Spatiales/Grilles de Pixels :} Traitées par des réseaux convolutifs (CNN) qui exploitent l'invariance par translation et le partage des poids pour extraire des motifs locaux au sein d'images de vêtements.
+
+    \item \textbf{Les Séquences Temporelles/Textuelles :} Manipulées via des architectures récurrentes (RNN, LSTM, GRU) agencées sous forme de modèles Seq2Seq, capables de conserver un état interne persistant pour modéliser des dépendances à long terme au sein du langage humain.
+
+\end{enumerate}
+
+
+
+Le manuscrit qui suit détaille méticuleusement chaque phase de ce flux de travail (\textit{workflow}), combinant les fondements mathématiques rigoureux des algorithmes d'optimisation à la réalité de leur implémentation sur machine à l'aide de l'accélération par tenseurs.
+
+
+
+% --- Chapitre 1 ---
+
+\chapter{Introduction aux Architectures Fondamentales}
+
+\section{Vue d'ensemble des architectures de réseaux de neurones}
+
+La conception d'une architecture de Deep Learning dépend intrinsèquement de la topologie mathématique des données d'entrée. Une inadéquation entre la structure du réseau et la nature des données mène inévitablement à un phénomène d'explosion du nombre de paramètres libres, provoquant un surapprentissage (\textit{overfitting}) critique ou une incapacité totale de convergence.
+
+
+
+Le Perceptron Multicouche (MLP) représente la forme la plus élémentaire des réseaux de neurones connectionnistes. Chaque unité d'une couche est connectée à la totalité des unités de la couche précédente. Si cette configuration offre une flexibilité totale pour modéliser des interactions complexes entre variables indépendantes, elle détruit complètement l'information de proximité géométrique lorsqu'elle est appliquée à des images, car le signal d'entrée doit être aplati (\textit{flattened}) sous forme de vecteur unidimensionnel.
+
+
+
+Pour pallier cette limitation, les Réseaux de Neurones Convolutifs (CNN) introduisent deux concepts fondamentaux ispirés du cortex visuel animal : les champs récepteurs locaux et le partage des poids. En faisant glisser un noyau de convolution (\textit{kernel}) sur l'espace bidimensionnel d'une image, le CNN apprend des filtres invariants par translation spatiale. Cela permet de réduire de plusieurs ordres de grandeur le nombre de connexions synaptiques par rapport à un MLP, tout en préservant la topologie de l'image.
+
+
+
+Enfin, les Réseaux Récurrents (RNN) brisent l'hypothèse d'indépendance des échantillons en introduisant une boucle de rétroaction temporelle. L'état caché à l'instant $t$ devient une fonction de l'entrée à cet instant précis mais aussi de l'état caché de l'instant précédent $t-1$. Cette récursivité permet de traiter des flux de données de longueur variable (texte, audio), faisant des RNNs les outils privilégiés pour appréhender la dynamique séquentielle.
+
+
+
+% --- Chapitre 2 ---
+
+\chapter{Préparation et Prétraitement Avancé des Données}
+
+\section{Exploration et compréhension fine du dataset}
+
+L'analyse exploratoire des données (\textit{Exploratory Data Analysis} - EDA) constitue le préambule obligatoire à toute manipulation algorithmique. Pour la partie tabulaire, le jeu de données \texttt{WineQT} comporte 1143 échantillons et 11 variables physico-chimiques (acidité fixe, volatilité, taux d'alcool, pH, sulfates...). L'EDA révèle que la variable cible originelle (\texttt{quality}), notée sur une échelle discrète de 3 à 8, présente un déséquilibre structurel extrême, les notes 5 et 6 capturant plus de 80\% de la distribution totale. Un entraînement direct du modèle sur ces étiquettes brutes conduirait le réseau à ignorer les classes minoritaires. C'est pourquoi une stratégie de binarisation est adoptée, fixant le seuil à $\ge 7$ pour qualifier un vin de "supérieur".
+
+
+
+\section{Prétraitement et normalisation par typologie}
+
+\subsection{Données tabulaires (MLP)}
+
+Les fonctions d'activation couramment utilisées dans les couches cachées (comme la fonction ReLU ou la tangente hyperbolique) possèdent des gradients qui sont sensibles à l'échelle des valeurs d'entrée. Si une variable possède un ordre de grandeur supérieur aux autres (par exemple, le dioxyde de soufre total qui varie de 6 à 289, face au chlorure qui oscille entre 0.012 et 0.611), elle va monopoliser la mise à jour des poids lors de la rétropropagation. La standardisation de type Z-score est appliquée :
+
+\mathrelentry{Standardisation Z-score (Normalisation tabulaire MLP)}{eq:zscore}
+\begin{center}
+\begin{equation}
+Z = \frac{X - \mu}{\sigma}
+\end{equation}
+\end{center}
+
+où $\mu$ représente la moyenne empirique et $\sigma$ l'écart-type de la variable sur l'ensemble d'entraînement. \important{Règle d'or absolue :} le calcul de $\mu$ et $\sigma$ est effectué exclusivement sur le jeu d'entraînement (\textit{train set}) afin d'éviter tout phénomène de fuite de données (\textit{data leakage}), puis appliqué tel quel aux sets de validation et de test.
+
+
+
+\subsection{Images (CNN)}
+
+Pour le dataset \texttt{Fashion-MNIST}, les données d'entrée se composent de 60 000 images matricielles de taille $28 \times 28$ pixels en niveaux de gris. Le prétraitement implique une mise à l'échelle des valeurs d'intensité des pixels de l'intervalle $[0, 255]$ vers $[0.0, 1.0]$. Ensuite, une normalisation est opérée pour centrer les données autour d'une moyenne de 0.5 avec un écart-type de 0.5. Pour la phase de Transfer Learning avec le modèle pré-entraîné \texttt{ResNet18}, les contraintes architecturales de ce dernier exigent des tenseurs à trois canaux (RGB). Une duplication des canaux noir et blanc est donc effectuée via l'opérateur de tenseur PyTorch \texttt{.repeat(1, 3, 1, 1)} lors du passage dans la boucle d'apprentissage.
+
+\begin{figure}[H]
+
+    \centering
+
+    \includegraphics[width=0.95\textwidth]{fashionMnist.png}
+
+    \caption{Échantillon du dataset Fashion-MNIST (28x28 pixels en niveaux de gris)}
+
+    \label{fig:fashion_mnist}
+
+\end{figure}
+
+\subsection{Séquences/Signaux (RNN/LSTM/GRU)}
+
+Le traitement automatique du langage naturel exige de transformer des chaînes de caractères textuelles en structures tensorielles denses. Le processus de prétraitement s'articule autour des étapes clés suivantes :
+
+\begin{itemize}
+
+    \item \keyword{Tokenisation :} Découpage de la phrase en unités lexicales minimales (mots).
+
+    \item \keyword{Indexation numérique :} Création d'une classe de dictionnaire bidirectionnel permettant de mapper chaque mot unique à un identifiant entier strict (\texttt{word2index} et \texttt{index2word}).
+
+    \item \keyword{Insertion de tokens spéciaux :} Injection systématique du marqueur de début de phrase \texttt{<SOS>} (index 0) et de fin de phrase \texttt{<EOS>} (index 1) pour borner temporellement l'apprentissage du décodeur.
+
+\end{itemize}
+
+
+
+\section{Séparation des données et protocoles de validation}
+
+Pour garantir une évaluation exempte de biais de surapprentissage, le jeu de données est partitionné de manière stricte en trois sous-ensembles disjoints : un ensemble d'entraînement (\textit{Train Set}, 70\%) pour le calcul des gradients et l'ajustement des poids synaptiques, un ensemble de validation (\textit{Validation Set}, 15\%) pour monitorer la perte à la fin de chaque époque et optimiser le choix des hyperparamètres, et enfin un ensemble de test (\textit{Test Set}, 15\%) préservé de toute manipulation et utilisé une unique fois pour mesurer la capacité finale de généralisation de l'algorithme.
+
+
+
+% --- Chapitre 3 ---
+
+\chapter{Architectures Profondes en Détail}
+
+\section{Perceptron Multicouche (MLP)}
+
+\subsection{Structure type et propagation avant}
+
+Le MLP implémenté se compose d'une couche d'entrée de dimension $N=11$ (les caractéristiques physiques du vin), de deux couches cachées denses de dimensions respectives 128 et 64, et d'une couche de sortie de dimension 2 pour la classification binaire. Mathématiquement, pour une couche donnée $l$, le calcul de la propagation vers l'avant s'énonce comme suit :
+
+\mathrelentry{Propagation avant (Forward Pass) -- couche $l$ du MLP}{eq:forwardpass}
+
+\begin{equation}
+\mathbf{a}^{[l]} =
+g^{[l]}\left(
+\mathbf{W}^{[l]} \mathbf{a}^{[l-1]} + \mathbf{b}^{[l]}
+\right)
+\label{eq:forwardpass}
+\end{equation}
+
+où $\mathbf{W}^{[l]}$ désigne la matrice des poids synaptiques, $\mathbf{b}^{[l]}$ le vecteur de biais, et $g^{[l]}$ la fonction d'activation non linéaire. Dans ce modèle, la fonction ReLU (\textit{Rectified Linear Unit}) est systématiquement employée pour les couches intermédiaires :
+
+\mathrelentry{Fonction d'activation ReLU}{eq:relu}
+
+\begin{equation}
+\text{ReLU}(x) = \max(0, x)
+\label{eq:relu}
+\end{equation}
+
+
+
+\subsection{Points d'attention théoriques et initialisation}
+
+L'initialisation des poids d'un réseau profond est une étape critique déterminant la qualité de la convergence. Une initialisation naïve à zéro ou constante détruit l'asymétrie des neurones : tous les neurones d'une même couche subissent alors exactement les mêmes mises à jour de gradient, transformant le réseau multi-couches en un équivalent à un seul neurone géant. 
+
+
+
+Pour contrer ce phénomène, nous appliquons l'initialisation de \keyword{Xavier Uniforme (Glorot)}, qui échantillonne les poids selon une distribution uniforme dans l'intervalle $[-\gamma, \gamma]$, où :
+
+\mathrelentry{Initialisation Xavier/Glorot -- borne de la distribution uniforme}{eq:xavier}
+
+\begin{equation}
+\gamma = \sqrt{\frac{6}{n_{\text{in}} + n_{\text{out}}}}
+\label{eq:xavier}
+\end{equation}
+
+Cette méthode maintient la variance des activations et des gradients stable d'une couche à l'autre, empêchant efficacement l'évanouissement ou l'explosion du gradient en début d'entraînement.
+
+
+
+\section{Réseaux de Neurones Convolutifs (CNN)}
+
+\subsection{Structure type du CNN personnalisé}
+
+Le CNN custom développé intègre deux blocs bidimensionnels consécutifs suivis de couches fully-connected. Chaque bloc est composé d'une couche convolutive (\texttt{nn.Conv2d}), d'une couche de normalisation par batch (\texttt{nn.BatchNorm2d}), d'une activation ReLU, et d'une couche de sous-échantillonnage (\texttt{nn.MaxPool2d}). 
+
+
+
+Le suivi rigoureux des dimensions spatiales des cartes de caractéristiques (\textit{feature maps}) est indispensable pour configurer la première couche linéaire. Pour une image d'entrée Fashion-MNIST de dimension $1 \times 28 \times 28$ :
+
+\begin{enumerate}
+
+    \item \textbf{Conv1} ($3 \times 3$, padding=1, 32 filtres) $\rightarrow 32 \times 28 \times 28$.
+
+    \item \textbf{MaxPool1} (kernel $2 \times 2$, stride 2) $\rightarrow 32 \times 14 \times 14$.
+
+    \item \textbf{Conv2} ($3 \times 3$, padding=1, 64 filtres) $\rightarrow 64 \times 14 \times 14$.
+
+    \item \textbf{MaxPool2} (kernel $2 \times 2$, stride 2) $\rightarrow 64 \times 7 \times 7$.
+
+\end{enumerate}
+
+Le tenseur bidimensionnel est alors aplati en un vecteur de taille $64 \times 7 \times 7 = 3136$ neurones, qui alimente une couche dense de 512 unités avant d'atteindre les 10 classes de sortie.
+
+
+
+\subsection{Mécanismes de transfert d'apprentissage et Fine-Tuning}
+
+Le transfert d'apprentissage exploite les représentations visuelles génériques apprises par un modèle massif (\texttt{ResNet18}) entraîné sur la base géante ImageNet (1,4 million d'images). Deux stratégies distinctes ont été implémentées et comparées :
+
+\begin{itemize}
+
+    \item \keyword{Feature Extraction :} Les poids de l'intégralité du corps de ResNet18 sont gelés (\texttt{param.requires\_grad = False}). Seule la tête de classification finale (\texttt{resnet.fc}) est modifiée et entraînée. Les filtres complexes d'ImageNet s'avérant trop éloignés des formes géométriques simples de Fashion-MNIST, cette approche donne une précision modeste de 78\%.
+
+    \item \keyword{Fine-Tuning Complet :} Toutes les couches du réseau sont dégelées. Le réseau est ré-entraîné dans son ensemble avec un taux d'apprentissage extrêmement faible ($10^{-4}$). Cette méthode permet aux filtres de s'adapter en douceur aux spécificités des vêtements noirs et blancs, propulsant l'accuracy à un score exceptionnel de \textbf{96,79 \%}.
+
+\end{itemize}
+
+\begin{figure}[H]
+
+    \centering
+
+    \includegraphics[width=0.9\textwidth]{resultat_resnet.png}
+
+    \caption{Sortie de la console PyTorch démontrant l'Accuracy de 96,79\% via Fine-Tuning}
+
+    \label{fig:resultat_resnet}
+
+\end{figure}
+
+
+
+\subsection{Augmentation de données en vision}
+
+Pour accroître artificiellement la diversité du set d'entraînement et forcer le CNN à apprendre des invariants géométriques, une chaîne de transformations à la volée est configurée :
+
+\mathrelentry{Pipeline d'augmentation de données (CNN -- vision)}{eq:augmentation}
+\begin{equation}
+
+\mathcal{T} = \text{TransformsRandomHorizontalFlip}() \circ \text{TransformsRandomRotation}(10^{\circ})
+
+\label{eq:augmentation}
+
+\end{equation}
+
+Cette régularisation spatiale interdit au réseau de mémoriser la position absolue des pixels, améliorant sa robustesse face aux variations réelles.
+
+
+
+\section{Réseaux Récurrents (RNN, LSTM, GRU)}
+
+\subsection{Comparaison approfondie des variantes récurrentes}
+
+Les réseaux récurrents simples (RNN) souffrent d'une limitation théorique majeure lors de la rétropropagation à travers le temps (\textit{Backpropagation Through Time} - BPTT). Le calcul du gradient sur de longues séquences fait intervenir un produit matriciel répété des poids récurrents $W_{hh}^t$. Si la plus grande valeur propre de cette matrice est inférieure à 1, le gradient décroît de manière exponentielle vers zéro, rendant impossible l'apprentissage des dépendances lointaines.
+
+
+
+L'architecture \keyword{LSTM} (Long Short-Term Memory) résout ce problème en introduisant un état de cellule ($C_t$) régulé par trois portes logiques. Les équations formelles régissant le flux d'information au sein de la cellule s'énoncent ainsi :
+
+\mathrelentry{Porte d'oubli LSTM -- $f_t$}{eq:lstm_forget}
+\mathrelentry{Porte d'entrée LSTM -- $i_t$}{eq:lstm_input}
+\mathrelentry{Candidat d'état LSTM -- $\tilde{C}_t$}{eq:lstm_candidate}
+\mathrelentry{Mise à jour de la cellule LSTM -- $C_t$}{eq:lstm_cell}
+\mathrelentry{Porte de sortie LSTM -- $o_t$}{eq:lstm_output}
+\mathrelentry{État caché final LSTM -- $h_t$}{eq:lstm_hidden}
+\begin{align}
+
+f_t &= \sigma\left(W_f \cdot [h_{t-1}, x_t] + b_f\right) \quad \text{(Porte d'oubli)} \label{eq:lstm_forget}\\
+
+i_t &= \sigma\left(W_i \cdot [h_{t-1}, x_t] + b_i\right) \quad \text{(Porte d'entrée)} \label{eq:lstm_input}\\
+
+\tilde{C}_t &= \tanh\left(W_c \cdot [h_{t-1}, x_t] + b_c\right) \quad \text{(Candidat d'état)} \label{eq:lstm_candidate}\\
+
+C_t &= f_t \odot C_{t-1} + i_t \odot \tilde{C}_t \quad \text{(Mise à jour de la cellule)} \label{eq:lstm_cell}\\
+
+o_t &= \sigma\left(W_o \cdot [h_{t-1}, x_t] + b_o\right) \quad \text{(Porte de sortie)} \label{eq:lstm_output}\\
+
+h_t &= o_t \odot \tanh(C_t) \quad \text{(État caché final)} \label{eq:lstm_hidden}
+
+\end{align}
+
+Le signe $\odot$ représente le produit de Hadamard (élément par élément). Grâce à cette structure, l'état de cellule agit comme une autoroute linéaire où le gradient peut s'écouler sans obstruction mathématique sur de très longues distances temporelles. Le \keyword{GRU} (Gated Recurrent Unit) simplifie ce mécanisme en fusionnant la porte d'oubli et d'entrée au sein d'une porte de mise à jour (\textit{update gate}), éliminant l'état de cellule pour ne conserver que l'état caché, ce qui réduit significativement le coût computationnel.
+
+\begin{figure}[H]
+
+    \centering
+
+    \includegraphics[width=1.1\textwidth]{gru.png}
+
+    \caption{Architecture interne d'une cellule GRU : une version allégée avec seulement deux portes ($z_t$ et $r_t$) et un seul état caché ($h_t$).}
+
+    \label{fig:gru_arch}
+
+\end{figure}
+
+
+
+\subsection{Configuration type du module Seq2Seq}
+
+L'architecture implémentée pour la traduction automatique repose sur un modèle \keyword{Seq2Seq}. L'Encodeur lit séquentiellement la phrase en français, mot après mot, mettant à jour son état caché. Le dernier état caché généré à la fin de la phrase synthétise l'intégralité du sens sémantique : c'est le \textit{vecteur de contexte}. Le Décodeur prend ce vecteur comme état caché initial et engendre, mot par mot, la séquence de traduction en anglais.
+
+
+
+% --- Chapitre 4 ---
+
+\chapter{Processus de Contrôle et d'Entraînement}
+
+\section{Fonctions de perte et surfaces de coût}
+
+Le choix de la fonction de perte (\textit{Loss Function}) est dicté par la nature probabiliste de la tâche de sortie. Pour notre classification multiclasse (CNN et Décodeur Seq2Seq), nous utilisons la perte d'entropie croisée (\texttt{CrossEntropyLoss}), qui combine mathématiquement une couche de LogSoftmax et une perte de log-vraisemblance négative (NLLLoss) :
+
+\mathrelentry{Perte d'entropie croisée (Cross-Entropy Loss)}{eq:crossentropy}
+
+\begin{equation}
+\mathcal{L}_{\text{CE}} =
+- \frac{1}{N}
+\sum_{i=1}^{N}
+\sum_{c=1}^{M}
+y_{i,c} \log(p_{i,c})
+\label{eq:crossentropy}
+\end{equation}
+
+où $y_{i,c}$ est un indicateur binaire valant 1 si la classe $c$ est la bonne cible pour l'échantillon $i$, et $p_{i,c}$ la probabilité prédite par le modèle via la distribution Softmax.
+
+
+
+\section{Dynamique des algorithmes d'optimisation}
+
+L'optimiseur ajuste les poids du réseau pour minimiser la perte en suivant la pente descendante du gradient. Deux algorithmes majeurs ont été manipulés :
+
+\begin{itemize}
+
+    \item \keyword{SGD (Stochastic Gradient Descent) :} Utilisé dans la partie récurrente, il applique une correction linéaire simple : $W \leftarrow W - \eta \nabla_W \mathcal{L}$. Bien que stable, il peut stagner dans les points de selle ou les vallées locales de la surface de coût.
+
+    \item \keyword{Adam (Adaptive Moment Estimation) :} Déployé sur le MLP et le CNN, il calcule un taux d'apprentissage adaptatif pour chaque paramètre individuel en estimant le premier moment (moyenne mobile du gradient) et le second moment non centré (variance mobile du gradient) :
+
+\mathrelentry{Mise à jour des poids par l'optimiseur Adam}{eq:adam}
+
+\begin{equation}
+W_{t+1} =
+W_t -
+\frac{\eta}{\sqrt{\hat{v}_t} + \epsilon}
+\hat{m}_t
+\label{eq:adam}
+\end{equation}
+
+    Cette formulation offre une convergence extrêmement rapide, particulièrement cruciale lors du Fine-Tuning de ResNet18.
+
+\end{itemize}
+
+
+
+\section{Stratégies de régularisation et de stabilisation}
+
+Pour empêcher le surapprentissage et garantir une convergence harmonieuse, trois couches de régularisation ont été intégrées au cœur de nos scripts PyTorch :
+
+\begin{enumerate}
+
+    \item \keyword{BatchNorm (Normalisation par Batch) :} Appliquée au CNN, elle normalise les activations de chaque mini-batch pour avoir une moyenne nulle et une variance unitaire, réduisant le décalage de covariable interne (\textit{Internal Covariate Shift}) et accélérant l'apprentissage.
+
+    \item \keyword{Dropout :} Intégré au MLP (0.3) et au CNN (0.5), il désactive de manière aléatoire un certain pourcentage de neurones à chaque itération d'entraînement, forçant le réseau à apprendre des représentations redondantes et robustes au lieu de dépendances co-adaptatives fragiles.
+
+    \item \keyword{Teacher Forcing :} Spécifique à la partie Seq2Seq, cette stratégie supervise le décodeur lors de sa phase d'apprentissage. Au lieu de lui injecter à l'instant $t$ sa propre prédiction de l'instant $t-1$ (qui peut être erronée et dévier totalement), on lui injecte le \textit{vrai mot cible} issu du texte de référence. Cela stabilise et accélère la convergence de manière spectaculaire, comme le démontre la chute de notre perte moyenne de 1.0543 à 0.0528 en 100 époques.
+
+\end{enumerate}
+
+
+
+% --- Chapitre 5 ---
+
+\chapter{Guide Pratique des Hyperparamètres}
+
+\section{Analyse de sensibilité des hyperparamètres clés}
+
+Les performances d'un réseau profond sont intimement liées au choix de ses hyperparamètres. Le tableau suivant synthétise la configuration optimale validée expérimentalement sur Kaggle pour les trois architectures étudiées :
+
+
+
+\begin{table}[H]
+
+\centering
+
+\caption{Synthèse des hyperparamètres optimaux par architecture}
+
+\vspace{0.3cm}
+
+\begin{tabular}{lccc}
+
+\toprule
+
+\textbf{Hyperparamètre} & \textbf{MLP (WineQT)} & \textbf{CNN (ResNet18)} & \textbf{Seq2Seq (LSTM)} \\
+
+\midrule
+
+Taux d'apprentissage ($\eta$) & $1 \times 10^{-3}$ & $1 \times 10^{-4}$ & $1 \times 10^{-2}$ \\
+
+Taille de Batch (\textit{Batch Size}) & 64 & 64 & 6 \\
+
+Optimiseur & Adam & Adam & SGD \\
+
+Nombre d'époques & 50 & 5 & 100 \\
+
+Dimension cachée & [128, 64] & 512 (FC) & 256 \\
+
+\bottomrule
+
+\end{tabular}
+
+\end{table}
+
+
+
+\section{Méthodologies de recherche d'hyperparamètres}
+
+Trois grandes approches de recherche coexistent en Deep Learning : la recherche sur grille (\textit{Grid Search}), qui teste de manière exhaustive toutes les combinaisons possibles au détriment d'un coût temporel prohibitif, la recherche aléatoire (\textit{Random Search}), statistiquement plus efficace car elle explore un spectre plus large des dimensions sensibles, et enfin l'optimisation bayésienne, qui modélise la performance du réseau via des processus gaussiens pour prédire intelligemment les prochaines combinaisons optimales à évaluer.
+
+
+
+% --- Chapitre 6 ---
+
+\chapter{Métriques d'Évaluation et Diagnostic des Courbes}
+
+\section{Formalisation mathématique des métriques de performance}
+
+L'évaluation finale de nos modèles sur l'ensemble de test s'appuie sur une série de métriques calculées à partir de la matrice de confusion (Vrais Positifs $VP$, Faux Positifs $FP$, Vrais Négatifs $VN$, Faux Négatifs $FN$) :
+
+\begin{itemize}
+
+    \item \keyword{Accuracy (Précision globale) :} Proportion d'échantillons correctement classés.
+
+\mathrelentry{Accuracy -- précision globale de classification}{eq:accuracy}
+
+\begin{equation}
+\text{Accuracy} =
+\frac{VP + VN}{VP + VN + FP + FN}
+\label{eq:accuracy}
+\end{equation}
+
+\item \keyword{Precision (Précision de classe) :}
+Capacité à ne pas générer de fausses alarmes.
+
+\mathrelentry{Precision -- précision de classe (taux de fausses alarmes)}{eq:precision}
+
+\begin{equation}
+\text{Precision} =
+\frac{VP}{VP + FP}
+\label{eq:precision}
+\end{equation}
+
+\item \keyword{Recall (Sensibilité) :}
+Capacité à détecter la totalité de la classe cible.
+
+\mathrelentry{Recall -- sensibilité / taux de détection}{eq:recall}
+
+\begin{equation}
+\text{Recall} =
+\frac{VP}{VP + FN}
+\label{eq:recall}
+\end{equation}
+
+\item \keyword{F1-Score :}
+Moyenne harmonique de la précision et du rappel,
+particulièrement robuste face aux datasets déséquilibrés.
+
+\mathrelentry{F1-Score -- moyenne harmonique Precision/Recall}{eq:f1score}
+
+\begin{equation}
+\text{F1-Score} =
+2 \times
+\frac{
+\text{Precision} \times \text{Recall}
+}{
+\text{Precision} + \text{Recall}
+}
+\label{eq:f1score}
+\end{equation}
+
+\end{itemize}
+
+\begin{figure}[H]
+
+    \centering
+
+    \includegraphics[width=0.6\textwidth]{matrice_mlp.png}
+
+    \caption{Matrice de confusion du modèle MLP binaire sur le dataset WineQT}
+
+    \label{fig:matrice_mlp}
+
+\end{figure}
+
+\section{Diagnostic par l'analyse des courbes d'apprentissage}
+
+Le suivi conjoint des courbes de perte (\textit{Loss}) d'entraînement et de validation au fil des époques constitue le meilleur outil de diagnostic comportemental du modèle. Un scénario idéal montre une décroissance simultanée et asymptotique des deux courbes. Si la courbe d'entraînement continue de décroître tandis que la courbe de validation commence à réaugmenter, le modèle est entré en phase de \important{surapprentissage (overfitting)}. À l'inverse, si les deux courbes stagnent prématurément à un niveau élevé, le modèle souffre de \important{sous-apprentissage (underfitting)}, indiquant que son architecture manque de capacité expressive pour encapsuler la complexité de la tâche.
+
+
+
+% --- Chapitre 7 ---
+
+\chapter{Interprétabilité et Transparence des Modèles}
+
+\section{Mécanismes d'explicabilité post-hoc}
+
+Les modèles de Deep Learning ont longtemps été critiqués pour leur nature de "boîte noire". Pour lever cette opacité, des outils d'interprétabilité ont été formalisés. En classification d'images, l'algorithme \keyword{Grad-CAM} (\textit{Gradient-weighted Class Activation Mapping}) utilise les gradients de n'importe quelle classe cible coulant dans la dernière couche convolutive pour produire une carte d'activation grossière mettant en évidence les régions discriminantes de l'image. Pour les données tabulaires, les valeurs \keyword{SHAP} (\textit{SHapley Additive exPlanations}), issues de la théorie des jeux coopératifs, permettent de quantifier l'impact positif ou négatif de chaque indicateur physico-chimique sur la prédiction finale de la qualité d'un échantillon donné.
+
+
+
+% --- Chapitre 8 ---
+
+\chapter{Bonnes Pratiques de Code et Erreurs Fréquentes}
+
+\section{Checklist de validation pré-entraînement}
+
+Avant de lancer le calcul d'un modèle lourd sur Kaggle, il est capital de valider les points de contrôle suivants :
+
+\begin{itemize}
+
+    \item Le modèle et les tenseurs de données sont bien alloués sur le même périphérique de calcul (\texttt{.to(device)}).
+
+    \item L'appel à \texttt{optimizer.zero\_grad()} est bien positionné au début de la boucle interne pour effacer les anciens gradients cumulés.
+
+    \item Les fonctions de perte reçoivent des dimensions compatibles (notamment l'alignement des indices de classe pour \texttt{CrossEntropyLoss}).
+
+\end{itemize}
+
+
+
+\section{Modèle de structure de code standard sous PyTorch}
+
+Voici l'architecture canonique d'une boucle d'apprentissage PyTorch telle que nous l'avons implémentée pour l'ensemble de nos expérimentations pratiques :
+
+
+
+\begin{verbatim}
+# =========================================================
+# 1. INITIALISATION DU SYSTÈME
+# =========================================================
+
+# Choix automatique du périphérique (GPU si disponible)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# Initialisation du modèle et transfert sur device
+model = CustomCNN().to(device)
+
+# Optimiseur Adam (mise à jour adaptative des poids)
+optimizer = torch.optim.Adam(
+    model.parameters(),
+    lr=1e-4
+)
+
+# Fonction de perte pour classification multi-classes
+criterion = nn.CrossEntropyLoss()
+
+
+# =========================================================
+# 2. BOUCLE D'ENTRAÎNEMENT
+# =========================================================
+
+for epoch in range(epochs):
+
+    # Mode entraînement (active Dropout + BatchNorm)
+    model.train()
+
+    total_loss = 0.0
+
+    for inputs, labels in train_loader:
+
+        # -------------------------------------------------
+        # 2.1 Transfert des données vers le device
+        # -------------------------------------------------
+        inputs = inputs.to(device)
+        labels = labels.to(device)
+
+        # -------------------------------------------------
+        # 2.2 Remise à zéro des gradients
+        # -------------------------------------------------
+        optimizer.zero_grad()
+
+        # -------------------------------------------------
+        # 2.3 Forward pass (prédictions du modèle)
+        # -------------------------------------------------
+        outputs = model(inputs)
+
+        # Calcul de la perte
+        loss = criterion(outputs, labels)
+
+        # Accumulation pour suivi
+        total_loss += loss.item()
+
+        # -------------------------------------------------
+        # 2.4 Backward pass (rétropropagation)
+        # -------------------------------------------------
+        loss.backward()
+
+        # -------------------------------------------------
+        # 2.5 Mise à jour des paramètres
+        # -------------------------------------------------
+        optimizer.step()
+
+    # =====================================================
+    # 3. SUIVI DES PERFORMANCES
+    # =====================================================
+    print(f"Epoch [{epoch+1}/{epochs}] - Loss: {total_loss:.4f}")
+
+\end{verbatim}
+
+
+
+% --- Chapitre 9 ---
+
+\chapter{Guide de Rédaction Académique}
+
+\section{Exigences de structure et critères de qualité}
+
+Conformément aux directives de l'EMSI, la rédaction du livrable final exige un formalisme rigoureux. Le style doit être scientifique, neutre et analytique. Chaque figure ou graphique inséré doit impérativement comporter une légende descriptive complète (\texttt{\textbackslash caption}) et faire l'objet d'un appel explicite et d'un commentaire commenté au sein du corps du texte (via la commande \texttt{\textbackslash ref}). Il convient d'éviter les affirmations vagues telles que "le modèle est bon" au profit de justifications quantifiées ("le modèle atteint une F1-macro de 0.91").
+
+
+
+% --- Chapitre 10 ---
+
+\chapter{Références Bibliographiques Recommandées}
+
+\section{Articles fondateurs de la littérature scientifique}
+
+\begin{enumerate}
+
+    \item \textbf{LeCun, Y., Bottou, L., Bengio, Y., \& Haffner, P. (1998).} \textit{Gradient-based learning applied to document recognition.} Proceedings of the IEEE, 86(11), 2278-2324. (Introduction des CNNs).
+
+    \item \textbf{Hochreiter, S., \& Schmidhuber, J. (1997).} \textit{Long short-term memory.} Neural computation, 9(8), 1735-1780. (Fondation de l'architecture LSTM).
+
+    \item \textbf{He, K., Zhang, X., Ren, S., \& Sun, J. (2016).} \textit{Deep residual learning for image recognition.} CVPR, 770-778. (Introduction de l'architecture ResNet et des connexions résiduelles).
+
+    \item \textbf{Kingma, D. P., \& Ba, J. (2014).} \textit{Adam: A method for stochastic optimization.} arXiv preprint arXiv:1412.6980. (Algorithme d'optimisation adaptatif).
+
+\end{enumerate}
+
+
+
+\section{Ressources pédagogiques de référence}
+
+\begin{itemize}
+
+    \item \textit{Deep Learning} (2016) par Ian Goodfellow, Yoshua Bengio et Aaron Courville, MIT Press.
+
+    \item Documentation officielle de PyTorch (\url{https://pytorch.org/docs}).
+
+    \item Dépôt open source officiel : \url{https://github.com/pytorch/pytorch}
+
+\end{itemize}
+
+
+
+% --- Conclusion Générale ---
+
+\chapter*{Conclusion Générale}
+
+\addcontentsline{toc}{chapter}{Conclusion Générale}
+
+Ce projet d'étude approfondie en Deep Learning a permis de concrétiser de manière logicielle les concepts mathématiques et algorithmiques fondamentaux enseignés tout au long du module à l'EMSI. En naviguant à travers trois univers de données distincts, les compétences clés d'ingénierie des systèmes intelligents ont été validées de bout en bout. L'implémentation du Perceptron Multicouche a mis en exergue l'importance vitale du conditionnement des données tabulaires et de la géométrie des initialisations pour éviter l'évanouissement du signal. L'exploration de la vision par ordinateur à travers les lentilles convolutives d'un modèle personnalisé puis par le Fine-Tuning de ResNet18 a démontré empiriquement la puissance et la flexibilité du transfert de connaissances inter-domaines, culminant à une précision presque parfaite de 96,79 \% sur Fashion-MNIST. Enfin, le déploiement d'un modèle de traduction Seq2Seq modulable entre LSTM et GRU a illustré la capacité unique des réseaux récurrents à capturer et transcrire la sémantique temporelle complexe du langage humain, magnifiée par l'efficacité de la stratégie du Teacher Forcing.
+
+
+
+En conclusion, ce travail atteste qu'une maîtrise holistique du Deep Learning exige une alliance intime entre la rigueur de la théorie statistique et la flexibilité de l'implémentation pratique sur tenseurs. Les architectures développées et validées sur GPU Kaggle forment une base technologique solide et hautement évolutive, ouvrant la voie à des extensions futures passionnantes vers les architectures attentionnelles contemporaines (Transformers) et les modèles de fondation génératifs.
+
+
+
+\end{document}
